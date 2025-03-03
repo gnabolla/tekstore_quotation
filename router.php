@@ -37,6 +37,17 @@ $routes = [
   "/quotations/view" => "controllers/quotations/view.php",
   "/quotations/pdf" => "controllers/quotations/generate_pdf.php",
   "/quotations/update-status" => "controllers/quotations/update-status.php",
+  
+  // Delivery Receipt routes
+  "/delivery-receipts" => "controllers/delivery-receipts/index.php",
+  "/delivery-receipts/create" => "controllers/delivery-receipts/create.php",
+  "/delivery-receipts/store" => "controllers/delivery-receipts/store.php",
+  "/delivery-receipts/edit" => "controllers/delivery-receipts/edit.php",
+  "/delivery-receipts/update" => "controllers/delivery-receipts/update.php",
+  "/delivery-receipts/delete" => "controllers/delivery-receipts/delete.php",
+  "/delivery-receipts/view" => "controllers/delivery-receipts/view.php",
+  "/delivery-receipts/pdf" => "controllers/delivery-receipts/generate_pdf.php",
+  "/delivery-receipts/update-status" => "controllers/delivery-receipts/update-status.php",
 ];
 
 // Route the request to the appropriate controller

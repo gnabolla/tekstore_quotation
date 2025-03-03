@@ -19,3 +19,9 @@
 <IfModule !mod_rewrite.c>
     ErrorDocument 500 "mod_rewrite is not enabled. Please enable it in your Apache configuration."
 </IfModule>
+
+# Prevent PHP errors from being displayed
+php_flag display_errors off
+
+# Enable output buffering
+php_value output_buffering 4096

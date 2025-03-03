@@ -14,9 +14,14 @@ include __DIR__ . '/../partials/head.php';
             <a href="<?= $baseUrl ?>/quotations/pdf?id=<?= $quotation['id'] ?>" class="btn btn-info me-2" target="_blank">
                 <i class="fas fa-file-pdf"></i> Generate PDF
             </a>
-            <a href="<?= $baseUrl ?>/quotations/edit?id=<?= $quotation['id'] ?>" class="btn btn-primary">
+            <a href="<?= $baseUrl ?>/quotations/edit?id=<?= $quotation['id'] ?>" class="btn btn-primary me-2">
                 <i class="fas fa-edit"></i> Edit
             </a>
+            <?php if ($quotation['status'] === 'approved'): ?>
+                <a href="<?= $baseUrl ?>/delivery-receipts/create?quotation_id=<?= $quotation['id'] ?>" class="btn btn-success">
+                    <i class="fas fa-truck"></i> Create Delivery Receipt
+                </a>
+            <?php endif; ?>
         </div>
     </div>
 
@@ -61,7 +66,7 @@ include __DIR__ . '/../partials/head.php';
                                 <p class="mb-1"><small>Fast and Quality Business Solution</small></p>
                                 <p class="mb-1">Magsaysay Street, Bantug, Roxas, Isabela</p>
                             </div>
-                            
+
                             <div class="mb-3">
                                 <h6>Client Information</h6>
                                 <p class="mb-1"><strong>Name:</strong> <?= htmlspecialchars($quotation['client_name']) ?></p>
@@ -72,7 +77,7 @@ include __DIR__ . '/../partials/head.php';
                                     <p class="mb-1"><strong>Address:</strong> <?= htmlspecialchars($quotation['client_address']) ?></p>
                                 <?php endif; ?>
                             </div>
-                            
+
                             <?php if (!empty($quotation['notes'])): ?>
                                 <div class="mb-3">
                                     <h6>Notes</h6>
@@ -80,13 +85,13 @@ include __DIR__ . '/../partials/head.php';
                                 </div>
                             <?php endif; ?>
                         </div>
-                        
+
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <h6>Quotation Information</h6>
                                 <p class="mb-1"><strong>Quote Number:</strong> <?= htmlspecialchars($quotation['quote_number']) ?></p>
                                 <p class="mb-1"><strong>Date:</strong> <?= date('F j, Y', strtotime($quotation['quote_date'])) ?></p>
-                                
+
                                 <?php if (!empty($quotation['budget'])): ?>
                                     <p class="mb-1">
                                         <strong>Budget:</strong> ₱<?= number_format($quotation['budget'], 2) ?>
@@ -96,7 +101,7 @@ include __DIR__ . '/../partials/head.php';
                                     </p>
                                 <?php endif; ?>
                             </div>
-                            
+
                             <?php if (!empty($quotation['agency_name'])): ?>
                                 <div class="mb-3">
                                     <h6>Agency Information</h6>
@@ -120,7 +125,7 @@ include __DIR__ . '/../partials/head.php';
                 </div>
             </div>
         </div>
-        
+
         <!-- Quotation Items -->
         <div class="col-md-12 mb-4">
             <div class="card">
@@ -171,7 +176,7 @@ include __DIR__ . '/../partials/head.php';
                 </div>
             </div>
         </div>
-        
+
         <!-- Status Update -->
         <div class="col-md-12 mb-4">
             <div class="card">
