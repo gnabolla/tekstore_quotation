@@ -33,8 +33,8 @@ include __DIR__ . '/../partials/head.php';
                             <th>Date</th>
                             <th>Client</th>
                             <th>Agency</th>
-                            <th>Quotation #</th>
-                            <th>Received By</th>
+                            <th>Payment For</th>
+                            <th>Amount</th>
                             <th>Status</th>
                             <th>Actions</th>
                         </tr>
@@ -48,11 +48,11 @@ include __DIR__ . '/../partials/head.php';
                             <?php foreach ($deliveryReceipts as $receipt): ?>
                                 <tr>
                                     <td><?= htmlspecialchars($receipt['receipt_number']) ?></td>
-                                    <td><?= htmlspecialchars($receipt['receipt_date']) ?></td>
+                                    <td><?= date('d-M-Y', strtotime($receipt['receipt_date'])) ?></td>
                                     <td><?= htmlspecialchars($receipt['client_name']) ?></td>
                                     <td><?= htmlspecialchars($receipt['agency_name'] ?? 'N/A') ?></td>
-                                    <td><?= htmlspecialchars($receipt['quote_number']) ?></td>
-                                    <td><?= htmlspecialchars($receipt['received_by']) ?></td>
+                                    <td><?= htmlspecialchars($receipt['payment_for'] ?? 'N/A') ?></td>
+                                    <td>₱<?= number_format($receipt['total_amount'] ?? 0, 2) ?></td>
                                     <td>
                                         <?php if ($receipt['status'] === 'pending'): ?>
                                             <span class="badge bg-warning">Pending</span>

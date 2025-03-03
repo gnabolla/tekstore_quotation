@@ -28,13 +28,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $receiptNumber = trim($_POST['receipt_number']);
     $receiptDate = trim($_POST['receipt_date']);
     $quotationId = (int) $_POST['quotation_id'];
+    $paymentFor = trim($_POST['payment_for'] ?? '');
     $deliveryAddress = trim($_POST['delivery_address'] ?? '');
     $receivedBy = trim($_POST['received_by'] ?? '');
     $contactNumber = trim($_POST['contact_number'] ?? '');
     $driverName = trim($_POST['driver_name'] ?? '');
-    $vehicleDetails = trim($_POST['vehicle_details'] ?? '');
     $notes = trim($_POST['notes'] ?? '');
     $status = 'pending'; // Default status for new delivery receipts
+    
+    // Get financial values
+    $subtotal = (float) $_POST['subtotal'];
+    $taxRate = null; // Tax rate is not fixed anymore
+    $taxAmount = (float) $_POST['tax'];
+    $totalAmount = (float) $_POST['total'];
 
     try {
         // Start transaction
@@ -43,12 +49,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Insert delivery receipt
         $db->query(
             "INSERT INTO delivery_receipts (
-                receipt_number, receipt_date, quotation_id, delivery_address, 
-                received_by, contact_number, driver_name, vehicle_details, status, notes
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                receipt_number, receipt_date, quotation_id, payment_for, delivery_address, 
+                received_by, contact_number, driver_name, status, notes,
+                subtotal, tax_rate, tax_amount, total_amount
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             [
-                $receiptNumber, $receiptDate, $quotationId, $deliveryAddress,
-                $receivedBy, $contactNumber, $driverName, $vehicleDetails, $status, $notes
+                $receiptNumber, $receiptDate, $quotationId, $paymentFor, $deliveryAddress,
+                $receivedBy, $contactNumber, $driverName, $status, $notes,
+                $subtotal, $taxRate, $taxAmount, $totalAmount
             ]
         );
 
@@ -65,15 +73,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $quotationItemId = !empty($item['quotation_item_id']) ? (int) $item['quotation_item_id'] : null;
             $itemName = trim($item['item_name']);
             $quantity = (int) $item['quantity'];
-            $unit = trim($item['unit'] ?? '');
-            $remarks = trim($item['remarks'] ?? '');
+            $unitPrice = (float) $item['unit_price'];
+            $totalPrice = (float) $item['amount'];
 
             $db->query(
                 "INSERT INTO delivery_receipt_items (
-                    delivery_receipt_id, quotation_item_id, item_name, quantity, unit, remarks
+                    delivery_receipt_id, quotation_item_id, item_name, quantity, 
+                    unit_price, total_price
                 ) VALUES (?, ?, ?, ?, ?, ?)",
                 [
-                    $deliveryReceiptId, $quotationItemId, $itemName, $quantity, $unit, $remarks
+                    $deliveryReceiptId, $quotationItemId, $itemName, $quantity,
+                    $unitPrice, $totalPrice
                 ]
             );
         }

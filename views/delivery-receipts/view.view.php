@@ -35,124 +35,128 @@ include __DIR__ . '/../partials/head.php';
     <?php endif; ?>
 
     <div class="row">
-        <!-- Receipt Header -->
+        <!-- Delivery Receipt Card -->
         <div class="col-md-12 mb-4">
             <div class="card">
-                <div class="card-header d-flex justify-content-between">
-                    <h5 class="mb-0">Delivery Receipt Details</h5>
-                    <div>
-                        <?php if ($receipt['status'] === 'pending'): ?>
-                            <span class="badge bg-warning">Pending</span>
-                        <?php elseif ($receipt['status'] === 'delivered'): ?>
-                            <span class="badge bg-success">Delivered</span>
-                        <?php elseif ($receipt['status'] === 'cancelled'): ?>
-                            <span class="badge bg-danger">Cancelled</span>
-                        <?php endif; ?>
-                    </div>
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">DELIVERY RECEIPT</h5>
                 </div>
                 <div class="card-body">
-                    <div class="row">
+                    <div class="row mb-4">
                         <div class="col-md-6">
-                            <div class="mb-3">
-                                <h6>Business Information</h6>
-                                <p class="mb-1">
-                                    <strong>Tekstore Computer Parts and Accessories Trading</strong>
-                                </p>
-                                <p class="mb-1"><small>Fast and Quality Business Solution</small></p>
-                                <p class="mb-1">Magsaysay Street, Bantug, Roxas, Isabela</p>
-                            </div>
-                            
-                            <div class="mb-3">
-                                <h6>Client Information</h6>
-                                <p class="mb-1"><strong>Name:</strong> <?= htmlspecialchars($receipt['client_name']) ?></p>
-                                <?php if (!empty($receipt['delivery_address'])): ?>
-                                    <p class="mb-1"><strong>Delivery Address:</strong> <?= htmlspecialchars($receipt['delivery_address']) ?></p>
-                                <?php endif; ?>
-                                <?php if (!empty($receipt['received_by'])): ?>
-                                    <p class="mb-1"><strong>Received By:</strong> <?= htmlspecialchars($receipt['received_by']) ?></p>
-                                <?php endif; ?>
-                                <?php if (!empty($receipt['contact_number'])): ?>
-                                    <p class="mb-1"><strong>Contact Number:</strong> <?= htmlspecialchars($receipt['contact_number']) ?></p>
-                                <?php endif; ?>
-                            </div>
-                            
-                            <?php if (!empty($receipt['notes'])): ?>
-                                <div class="mb-3">
-                                    <h6>Notes</h6>
-                                    <p class="mb-1"><?= nl2br(htmlspecialchars($receipt['notes'])) ?></p>
-                                </div>
-                            <?php endif; ?>
+                            <h4>Tekstore Computer Parts and Accessories Trading</h4>
+                            <p class="mb-1"><small><em>Fast and Quality Business Solution</em></small></p>
+                            <p class="mb-1">Magsaysay Street, Bantug, Roxas, Isabela</p>
+                            <p class="mb-1">09166027454</p>
+                            <p class="mb-1">tekstore.solution@gmail.com</p>
                         </div>
-                        
                         <div class="col-md-6">
-                            <div class="mb-3">
-                                <h6>Receipt Information</h6>
-                                <p class="mb-1"><strong>Receipt Number:</strong> <?= htmlspecialchars($receipt['receipt_number']) ?></p>
-                                <p class="mb-1"><strong>Date:</strong> <?= date('F j, Y', strtotime($receipt['receipt_date'])) ?></p>
-                                <p class="mb-1"><strong>Quotation Number:</strong> <?= htmlspecialchars($receipt['quote_number']) ?></p>
-                            </div>
-                            
-                            <div class="mb-3">
-                                <h6>Delivery Information</h6>
-                                <?php if (!empty($receipt['driver_name'])): ?>
-                                    <p class="mb-1"><strong>Driver Name:</strong> <?= htmlspecialchars($receipt['driver_name']) ?></p>
-                                <?php endif; ?>
-                                <?php if (!empty($receipt['vehicle_details'])): ?>
-                                    <p class="mb-1"><strong>Vehicle Details:</strong> <?= htmlspecialchars($receipt['vehicle_details']) ?></p>
-                                <?php endif; ?>
-                            </div>
-                            
-                            <?php if (!empty($receipt['agency_name'])): ?>
-                                <div class="mb-3">
-                                    <h6>Agency Information</h6>
-                                    <p class="mb-1"><strong>Agency:</strong> <?= htmlspecialchars($receipt['agency_name']) ?></p>
-                                    <?php if (!empty($receipt['agency_address'])): ?>
-                                        <p class="mb-1"><strong>Address:</strong> <?= htmlspecialchars($receipt['agency_address']) ?></p>
-                                    <?php endif; ?>
+                            <div class="row mb-2">
+                                <div class="col-md-5">
+                                    <strong>Receipt No:</strong>
                                 </div>
-                            <?php endif; ?>
+                                <div class="col-md-7">
+                                    <?= htmlspecialchars($receipt['receipt_number']) ?>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-5">
+                                    <strong>Date:</strong>
+                                </div>
+                                <div class="col-md-7">
+                                    <?= date('d-M-Y', strtotime($receipt['receipt_date'])) ?>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Receipt Items -->
-        <div class="col-md-12 mb-4">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0">Delivered Items</h5>
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
+
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <div class="bg-light p-2">
+                                <strong>Payment for:</strong> <?= htmlspecialchars($receipt['payment_for'] ?? '') ?>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-12 mb-2">
+                            <div class="bg-light p-2">
+                                <strong>Customer Details:</strong>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <strong>Name:</strong> <?= htmlspecialchars($receipt['client_name']) ?>
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <strong>Address:</strong> <?= htmlspecialchars($receipt['delivery_address'] ?? '') ?>
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <strong>Phone No:</strong> <?= htmlspecialchars($receipt['contact_number'] ?? '') ?>
+                        </div>
+                    </div>
+
+                    <!-- Items Table -->
+                    <div class="table-responsive mb-4">
                         <table class="table table-bordered">
-                            <thead>
+                            <thead class="bg-light">
                                 <tr>
-                                    <th>#</th>
-                                    <th>Item Name</th>
-                                    <th>Quantity</th>
-                                    <th>Unit</th>
-                                    <th>Remarks</th>
+                                    <th>No. of Packages</th>
+                                    <th>Description</th>
+                                    <th>Price per Package</th>
+                                    <th>TOTAL</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php if (empty($items)): ?>
                                     <tr>
-                                        <td colspan="5" class="text-center">No items found</td>
+                                        <td colspan="4" class="text-center">No items found</td>
                                     </tr>
                                 <?php else: ?>
-                                    <?php foreach ($items as $index => $item): ?>
+                                    <?php foreach ($items as $item): ?>
                                         <tr>
-                                            <td><?= $index + 1 ?></td>
-                                            <td><?= htmlspecialchars($item['item_name']) ?></td>
                                             <td class="text-center"><?= $item['quantity'] ?></td>
-                                            <td><?= htmlspecialchars($item['unit']) ?></td>
-                                            <td><?= htmlspecialchars($item['remarks']) ?></td>
+                                            <td><?= htmlspecialchars($item['item_name']) ?></td>
+                                            <td class="text-end">$<?= number_format($item['unit_price'] ?? $item['final_price'], 2) ?></td>
+                                            <td class="text-end">$<?= number_format($item['total_price'] ?? ($item['quantity'] * ($item['final_price'] ?? 0)), 2) ?></td>
                                         </tr>
                                     <?php endforeach; ?>
                                 <?php endif; ?>
                             </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="3" class="text-end bg-light"><strong>Subtotal</strong></td>
+                                    <td class="text-end">₱<?= number_format($receipt['subtotal'] ?? 0, 2) ?></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" class="text-end bg-light"><strong>Tax</strong></td>
+                                    <td class="text-end">₱<?= number_format($receipt['tax_amount'] ?? 0, 2) ?></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" class="text-end bg-light"><strong>TOTAL</strong></td>
+                                    <td class="text-end">₱<?= number_format($receipt['total_amount'] ?? 0, 2) ?></td>
+                                </tr>
+                            </tfoot>
                         </table>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <p><strong>NOTE:</strong> <?= htmlspecialchars($receipt['notes'] ?? 'If you have any questions about this invoice, please contact 09166027454 | tekstore.solution@gmail.com') ?></p>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <strong>Signature:</strong>
+                            <div class="border-bottom my-3 py-3"></div>
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <strong>Date:</strong>
+                            <div class="border-bottom my-3 py-3"></div>
+                        </div>
+                        <div class="col-12 text-center">
+                            <p><em>Thank you for your business!</em></p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -178,21 +182,19 @@ include __DIR__ . '/../partials/head.php';
             </div>
         </div>
         
-        <!-- Signature Area -->
+        <!-- Delivery Details -->
         <div class="col-md-12 mb-4">
             <div class="card">
                 <div class="card-header">
-                    <h5 class="mb-0">Signatures</h5>
+                    <h5 class="mb-0">Delivery Details</h5>
                 </div>
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-md-6 text-center">
-                            <div style="border-bottom: 1px solid #ddd; padding-top: 50px; margin-bottom: 10px;"></div>
-                            <p><strong>Delivered by:</strong> <?= htmlspecialchars($receipt['driver_name'] ?: '____________________') ?></p>
+                        <div class="col-md-6">
+                            <p><strong>Driver Name:</strong> <?= htmlspecialchars($receipt['driver_name'] ?? 'N/A') ?></p>
                         </div>
-                        <div class="col-md-6 text-center">
-                            <div style="border-bottom: 1px solid #ddd; padding-top: 50px; margin-bottom: 10px;"></div>
-                            <p><strong>Received by:</strong> <?= htmlspecialchars($receipt['received_by'] ?: '____________________') ?></p>
+                        <div class="col-md-6">
+                            <p><strong>Received By:</strong> <?= htmlspecialchars($receipt['received_by'] ?? 'N/A') ?></p>
                         </div>
                     </div>
                 </div>

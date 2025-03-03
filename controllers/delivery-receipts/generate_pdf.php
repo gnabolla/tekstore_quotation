@@ -36,8 +36,9 @@ if (!$receipt) {
 
 // Get delivery receipt items
 $items = $db->query("
-    SELECT dri.*
+    SELECT dri.*, qi.unit_price, qi.final_price 
     FROM delivery_receipt_items dri
+    LEFT JOIN quotation_items qi ON dri.quotation_item_id = qi.id
     WHERE dri.delivery_receipt_id = ?
     ORDER BY dri.id ASC
 ", [$id])->fetchAll();
@@ -46,24 +47,7 @@ $items = $db->query("
 class MYPDF extends TCPDF {
     // Page header
     public function Header() {
-        $this->SetY(10);
-        // Set font
-        $this->SetFont('helvetica', 'B', 14);
-        // Title
-        $this->Cell(0, 15, 'Tekstore Computer Parts and Accessories Trading', 0, false, 'C', 0, '', 0, false, 'M', 'M');
-        // Slogan
-        $this->Ln(8);
-        $this->SetFont('helvetica', 'I', 10);
-        $this->Cell(0, 10, 'Fast and Quality Business Solution', 0, false, 'C', 0, '', 0, false, 'T', 'M');
-        // Address
-        $this->Ln(6);
-        $this->SetFont('helvetica', '', 10);
-        $this->Cell(0, 10, 'Magsaysay Street, Bantug, Roxas, Isabela', 0, false, 'C', 0, '', 0, false, 'T', 'M');
-        
-        $this->Ln(10);
-        $this->SetFont('helvetica', 'B', 16);
-        $this->Cell(0, 10, 'DELIVERY RECEIPT', 0, false, 'C', 0, '', 0, false, 'M', 'M');
-        $this->Ln(15);
+        // Empty header
     }
 
     // Page footer
@@ -82,21 +66,16 @@ $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8',
 
 // Set document information
 $pdf->SetCreator('Tekstore Quotation System');
-$pdf->SetAuthor('Tekstore');
+$pdf->SetAuthor('Tekstore Computer Parts and Accessories Trading');
 $pdf->SetTitle('Delivery Receipt #' . $receipt['receipt_number']);
 $pdf->SetSubject('Delivery Receipt');
-$pdf->SetKeywords('Delivery, Receipt, Tekstore, Computer');
-
-// Set default header and footer data
-$pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
-$pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
 
 // Set default monospaced font
 $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
 
 // Set margins
-$pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP + 20, PDF_MARGIN_RIGHT);
-$pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
+$pdf->SetMargins(15, 15, 15);
+$pdf->SetHeaderMargin(0);
 $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
 
 // Set auto page breaks
@@ -108,123 +87,119 @@ $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
 // Add a page
 $pdf->AddPage();
 
-// Set font for receipt details
-$pdf->SetFont('helvetica', '', 10);
+// Set font
+$pdf->SetFont('helvetica', 'B', 16);
 
-// Receipt details
-$pdf->Cell(40, 10, 'Receipt Number:', 0, 0);
-$pdf->Cell(80, 10, $receipt['receipt_number'], 0, 0);
-$pdf->Cell(30, 10, 'Date:', 0, 0);
-$pdf->Cell(40, 10, date('F j, Y', strtotime($receipt['receipt_date'])), 0, 1);
-
-$pdf->Cell(40, 10, 'Quotation Number:', 0, 0);
-$pdf->Cell(150, 10, $receipt['quote_number'], 0, 1);
-
-if ($receipt['agency_name']) {
-    $pdf->Cell(40, 10, 'Agency:', 0, 0);
-    $pdf->Cell(150, 10, $receipt['agency_name'], 0, 1);
-}
-
+// Title
+$pdf->Cell(0, 10, 'DELIVERY RECEIPT', 0, 1, 'C');
 $pdf->Ln(5);
 
-// Client Information
-$pdf->SetFont('helvetica', 'B', 12);
-$pdf->Cell(0, 10, 'Client Information', 0, 1);
+// Company information
+$pdf->SetFont('helvetica', 'B', 14);
+$pdf->Cell(0, 10, 'Tekstore Computer Parts and Accessories Trading', 0, 1, 'L');
+$pdf->SetFont('helvetica', 'I', 10);
+$pdf->Cell(0, 5, 'Fast and Quality Business Solution', 0, 1, 'L');
 $pdf->SetFont('helvetica', '', 10);
-
-$pdf->Cell(40, 8, 'Name:', 0, 0);
-$pdf->Cell(150, 8, $receipt['client_name'], 0, 1);
-
-if ($receipt['delivery_address']) {
-    $pdf->Cell(40, 8, 'Delivery Address:', 0, 0);
-    $pdf->Cell(150, 8, $receipt['delivery_address'], 0, 1);
-}
-
-if ($receipt['received_by']) {
-    $pdf->Cell(40, 8, 'Received By:', 0, 0);
-    $pdf->Cell(150, 8, $receipt['received_by'], 0, 1);
-}
-
-if ($receipt['contact_number']) {
-    $pdf->Cell(40, 8, 'Contact Number:', 0, 0);
-    $pdf->Cell(150, 8, $receipt['contact_number'], 0, 1);
-}
-
+$pdf->Cell(0, 5, 'Magsaysay Street, Bantug, Roxas, Isabela', 0, 1, 'L');
+$pdf->Cell(0, 5, '09166027454', 0, 1, 'L');
+$pdf->Cell(0, 5, 'tekstore.solution@gmail.com', 0, 1, 'L');
 $pdf->Ln(5);
 
-// Delivery Information
-$pdf->SetFont('helvetica', 'B', 12);
-$pdf->Cell(0, 10, 'Delivery Information', 0, 1);
-$pdf->SetFont('helvetica', '', 10);
-
-if ($receipt['driver_name']) {
-    $pdf->Cell(40, 8, 'Driver Name:', 0, 0);
-    $pdf->Cell(150, 8, $receipt['driver_name'], 0, 1);
-}
-
-if ($receipt['vehicle_details']) {
-    $pdf->Cell(40, 8, 'Vehicle Details:', 0, 0);
-    $pdf->Cell(150, 8, $receipt['vehicle_details'], 0, 1);
-}
-
-$pdf->Ln(5);
-
-// Items
-$pdf->SetFont('helvetica', 'B', 12);
-$pdf->Cell(0, 10, 'Delivered Items', 0, 1);
-$pdf->SetFont('helvetica', '', 10);
-
-// Items table header
-$pdf->SetFillColor(240, 240, 240);
+// Receipt Details and Customer Details in a table
 $pdf->SetFont('helvetica', 'B', 10);
-$pdf->Cell(10, 10, '#', 1, 0, 'C', 1);
-$pdf->Cell(80, 10, 'Item Description', 1, 0, 'C', 1);
-$pdf->Cell(20, 10, 'Quantity', 1, 0, 'C', 1);
-$pdf->Cell(20, 10, 'Unit', 1, 0, 'C', 1);
-$pdf->Cell(60, 10, 'Remarks', 1, 1, 'C', 1);
+$pdf->Cell(95, 7, 'Payment for:', 1, 0, 'L', 1);
+$pdf->Cell(95, 7, $receipt['payment_for'] ?? '', 1, 1, 'L', 0);
 
-// Items table rows
+// Receipt details table
 $pdf->SetFont('helvetica', '', 10);
+$pdf->Cell(30, 7, 'Receipt No:', 1, 0, 'L', 1);
+$pdf->Cell(65, 7, $receipt['receipt_number'], 1, 0, 'L');
+$pdf->Cell(30, 7, 'Date:', 1, 0, 'L', 1);
+$pdf->Cell(65, 7, date('d-M-Y', strtotime($receipt['receipt_date'])), 1, 1, 'L');
+
+// Customer details section
+$pdf->SetFont('helvetica', 'B', 10);
+$pdf->Cell(95, 7, 'Customer Details:', 1, 0, 'L', 1);
+$pdf->Cell(95, 7, '', 1, 1, 'L', 0);
+
+$pdf->SetFont('helvetica', '', 10);
+$pdf->Cell(30, 7, 'Name:', 1, 0, 'L', 1);
+$pdf->Cell(65, 7, $receipt['client_name'], 1, 0, 'L');
+$pdf->Cell(30, 7, 'Address:', 1, 0, 'L', 1);
+$pdf->Cell(65, 7, $receipt['delivery_address'] ?? '', 1, 1, 'L');
+
+$pdf->Cell(30, 7, 'Phone No:', 1, 0, 'L', 1);
+$pdf->Cell(65, 7, $receipt['contact_number'] ?? '', 1, 0, 'L');
+$pdf->Cell(30, 7, '', 1, 0, 'L', 1);
+$pdf->Cell(65, 7, '', 1, 1, 'L');
+
+$pdf->Ln(5);
+
+// Items Table
+$pdf->SetFont('helvetica', 'B', 10);
+$pdf->Cell(15, 7, 'No.', 1, 0, 'C', 1);
+$pdf->Cell(75, 7, 'Description', 1, 0, 'C', 1);
+$pdf->Cell(30, 7, 'Price per Package', 1, 0, 'C', 1);
+$pdf->Cell(70, 7, 'TOTAL', 1, 1, 'C', 1);
+
+$pdf->SetFont('helvetica', '', 10);
+
+// Print items
 $i = 0;
 foreach ($items as $item) {
     $i++;
-    $pdf->Cell(10, 10, $i, 1, 0, 'C');
-    $pdf->Cell(80, 10, $item['item_name'], 1, 0, 'L');
-    $pdf->Cell(20, 10, $item['quantity'], 1, 0, 'C');
-    $pdf->Cell(20, 10, $item['unit'], 1, 0, 'C');
-    $pdf->Cell(60, 10, $item['remarks'], 1, 1, 'L');
+    $price = $item['unit_price'] ?? $item['final_price'] ?? 0;
+    $quantity = $item['quantity'];
+    $amount = $item['total_price'] ?? ($price * $quantity);
+    
+    $pdf->Cell(15, 7, $quantity, 1, 0, 'C');
+    $pdf->Cell(75, 7, $item['item_name'], 1, 0, 'L');
+    $pdf->Cell(30, 7, '₱' . number_format($price, 2), 1, 0, 'R');
+    $pdf->Cell(70, 7, '₱' . number_format($amount, 2), 1, 1, 'R');
 }
 
-$pdf->Ln(5);
+// Fill empty rows to match the template
+for ($j = $i; $j < 10; $j++) {
+    $pdf->Cell(15, 7, '', 1, 0, 'C');
+    $pdf->Cell(75, 7, '', 1, 0, 'L');
+    $pdf->Cell(30, 7, '', 1, 0, 'R');
+    $pdf->Cell(70, 7, '', 1, 1, 'R');
+}
+
+// Totals section
+$pdf->SetFont('helvetica', 'B', 10);
+$pdf->Cell(120, 7, 'Subtotal', 1, 0, 'R', 1);
+$pdf->Cell(70, 7, '₱' . number_format($receipt['subtotal'] ?? 0, 2), 1, 1, 'R');
+
+$pdf->Cell(120, 7, 'Tax', 1, 0, 'R', 1);
+$pdf->Cell(70, 7, '₱' . number_format($receipt['tax_amount'] ?? 0, 2), 1, 1, 'R');
+
+$pdf->Cell(120, 7, 'TOTAL', 1, 0, 'R', 1);
+$pdf->Cell(70, 7, '₱' . number_format($receipt['total_amount'] ?? 0, 2), 1, 1, 'R');
 
 // Notes
-if ($receipt['notes']) {
-    $pdf->SetFont('helvetica', 'B', 12);
-    $pdf->Cell(0, 10, 'Notes', 0, 1);
-    $pdf->SetFont('helvetica', '', 10);
-    $pdf->MultiCell(0, 10, $receipt['notes'], 0, 'L');
-    $pdf->Ln(5);
-}
-
-// Status
-$pdf->SetFont('helvetica', 'B', 12);
-$pdf->Cell(0, 10, 'Status: ', 0, 0);
-$pdf->SetFont('helvetica', '', 12);
-$pdf->Cell(0, 10, ucfirst($receipt['status']), 0, 1);
-
-$pdf->Ln(20);
-
-// Signature lines
-$pdf->Line(20, $pdf->GetY(), 90, $pdf->GetY());
-$pdf->Line(110, $pdf->GetY(), 180, $pdf->GetY());
-
-$pdf->Ln(2);
+$pdf->Ln(5);
 $pdf->SetFont('helvetica', '', 10);
-$pdf->Cell(90, 10, 'Delivered by', 0, 0, 'C');
-$pdf->Cell(90, 10, 'Received by', 0, 1, 'C');
+$pdf->Cell(0, 5, 'NOTE: ' . ($receipt['notes'] ?? 'If you have any questions about this receipt, please contact 09166027454 | tekstore.solution@gmail.com'), 0, 1, 'L');
 
-$pdf->Cell(90, 5, $receipt['driver_name'], 0, 0, 'C');
-$pdf->Cell(90, 5, $receipt['received_by'], 0, 1, 'C');
+// Signature section
+$pdf->Ln(10);
+$pdf->Cell(95, 0, 'Signature:', 0, 0, 'L');
+$pdf->Cell(95, 0, '', 0, 1, 'L');
+$pdf->Ln(5);
+$pdf->Cell(95, 0, '', 'B', 0, 'L');
+$pdf->Cell(95, 0, '', 0, 1, 'L');
+
+$pdf->Ln(5);
+$pdf->Cell(95, 0, 'Date:', 0, 0, 'L');
+$pdf->Cell(95, 0, '', 0, 1, 'L');
+$pdf->Ln(5);
+$pdf->Cell(95, 0, '', 'B', 0, 'L');
+$pdf->Cell(95, 0, '', 0, 1, 'L');
+
+$pdf->Ln(15);
+$pdf->SetFont('helvetica', 'I', 10);
+$pdf->Cell(0, 0, 'Thank you for your business!', 0, 1, 'C');
 
 // Output the PDF
 $pdf->Output('Delivery_Receipt_' . $receipt['receipt_number'] . '.pdf', 'I');
