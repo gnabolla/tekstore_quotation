@@ -1,0 +1,44 @@
+Business Name: Tekstore Computer Parts and Accessories Trading
+Slogan: "Fast and Quality Business Solution"
+Address: Magsaysay Street, Bantug, Roxas, Isabela
+
+Date:
+Quote #:
+
+Quotation for:
+Name:
+Agency:
+Address:
+Email:
+
+Item no.
+Quantity
+Unit Price
+Amount
+Total
+Grand Total
+
+make it peso currency.
+
+I want it to have CRUD for agency cause it will be repetitive to give quote to them
+
+the request for quotation have budget given by agency. my quote should be lower that it, so we should have an input of the budget.
+
+I should input the Item name and price, then there should be a dynamic mark up. and the calculated final price will be put on pdf quotation.
+
+we should have all of this:
+Creating new quotations
+Editing existing quotations
+Converting quotations to invoices
+Printing/exporting quotations as PDF
+Tracking status of quotations (pending, approved, declined)
+
+Will this be a standalone system or part of a larger application?
+I will add some features later on.
+
+Do you have any specific design requirements or preferences for the user interface?
+you decide.
+
+I attached repo we will use as template or MVC of the project.
+
+we will use xampp

@@ -1,0 +1,21 @@
+# File path: C:\xampp\htdocs\tekstore_quotation\.htaccess
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    
+    # Set the base directory if needed
+    RewriteBase /tekstore_quotation/
+    
+    # If the request is for a real file or directory, skip the rewrite rules
+    RewriteCond %{REQUEST_FILENAME} -f [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^ - [L]
+    
+    # Rewrite all other requests to index.php
+    RewriteRule ^(.*)$ index.php [QSA,L]
+</IfModule>
+
+# If mod_rewrite is not available, show an error
+<IfModule !mod_rewrite.c>
+    ErrorDocument 500 "mod_rewrite is not enabled. Please enable it in your Apache configuration."
+</IfModule>
