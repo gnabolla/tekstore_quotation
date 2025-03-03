@@ -1,30 +1,34 @@
 <?php
 // File path: controllers/agencies/edit.php
 
-require 'Database.php';
-$config = require 'config.php';
+require_once 'config/database.php';
 
-// Base URL
-$baseUrl = '/tekstore_quotation';
+// Get agency ID from query string
+$id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
-// Initialize the database
-$db = new Database($config['database']);
+// Set page title
+$pageTitle = 'Edit Agency';
 
-// Check if ID is provided
-if (!isset($_GET['id']) || empty($_GET['id'])) {
-    header("Location: {$baseUrl}/agencies?error=Agency ID is required");
-    exit;
+// Fetch agency data
+$agency = null;
+if ($id > 0) {
+    try {
+        $query = "SELECT * FROM agencies WHERE id = :id";
+        $stmt = $conn->prepare($query);
+        $stmt->bindParam(':id', $id);
+        $stmt->execute();
+        $agency = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        if (!$agency) {
+            // Agency not found
+            header("Location: /tekstore_quotation/agencies");
+            exit;
+        }
+    } catch (PDOException $e) {
+        // Handle error
+        $errorMessage = "Database error: " . $e->getMessage();
+    }
 }
 
-$id = (int) $_GET['id'];
-
-// Get the agency by ID
-$agency = $db->query("SELECT * FROM agencies WHERE id = ?", [$id])->fetch();
-
-// Check if agency exists
-if (!$agency) {
-    header("Location: {$baseUrl}/agencies?error=Agency not found");
-    exit;
-}
-
+// Include the view file
 require 'views/agencies/edit.view.php';

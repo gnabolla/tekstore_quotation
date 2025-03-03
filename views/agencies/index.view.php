@@ -1,7 +1,7 @@
 <?php
 // File path: views/agencies/index.view.php
 
-include '../views/partials/head.php' 
+include __DIR__ . '/../partials/head.php';
 ?>
 
 <div class="container-fluid mt-4">
@@ -66,4 +66,4 @@ include '../views/partials/head.php'
     </div>
 </div>
 
-<?php include '../views/partials/foot.php' ?>
+<?php include __DIR__ . '/../partials/foot.php' ?>

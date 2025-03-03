@@ -1,27 +1,25 @@
 <?php
 // File path: views/partials/foot.php
 ?>
-        </div>
-    </div>
-</div>
+</div><!-- End of content div -->
+    </div><!-- End of row div -->
+</div><!-- End of container div -->
 
-<!-- Bootstrap JS -->
+<!-- Bootstrap JS Bundle with Popper -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
-<!-- jQuery -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-<!-- Custom JS -->
+<!-- Confirm delete functionality -->
 <script>
-    $(document).ready(function() {
-        // Generic delete confirmation
-        $('.btn-delete').on('click', function(e) {
-            if (!confirm('Are you sure you want to delete this item?')) {
-                e.preventDefault();
-            }
+    document.addEventListener('DOMContentLoaded', function() {
+        const deleteButtons = document.querySelectorAll('.btn-delete');
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', function(event) {
+                if (!confirm('Are you sure you want to delete this item? This action cannot be undone.')) {
+                    event.preventDefault();
+                }
+            });
         });
     });
 </script>
-
 </body>
 </html>
